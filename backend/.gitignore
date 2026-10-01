@@ -1,0 +1,3 @@
+# for push logic
+node_modules
+.env

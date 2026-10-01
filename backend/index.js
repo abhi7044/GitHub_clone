@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const yargs = require("yargs");
 const { hideBin } = require("yargs/helpers");
 
@@ -9,6 +11,7 @@ const { pullRepo } = require("./controller/pull");
 const { revertRepo } = require("./controller/revert");
 
 yargs(hideBin(process.argv))
+    .command("start","Starts a new server",{},startserver)
     .command("init","Initialise a new reposetory",{},initRepo)
     .command("add <file>","Add a file to the reposetory",(yargs) => {
         yargs.positional("file", {
@@ -24,7 +27,10 @@ yargs(hideBin(process.argv))
             describe: "Commit message",
             type: "string",
         });
-    },commitRepo)
+    },
+    (argv) => {
+        commitRepo(argv.message);
+    })
     .command("push", "Push commits to S3", {}, pushRepo)
     .command("pull", "Pull commits to S3", {}, pullRepo)
     .command("revert <commitID>","Revert to a specific commit",(yargs) => {
@@ -32,6 +38,12 @@ yargs(hideBin(process.argv))
             describe: "Comit ID to revert to",
             type: "string",
         });
-    },revertRepo)
+    },(argv) => {
+        revertRepo(argv.commitID);
+    })
     .demandCommand(1, "You need atleast one command")
     .help().argv;
+
+    function startserver() {
+        console.log("Server logic called");
+    }
